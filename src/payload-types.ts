@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    projects: Project;
+    skills: Skill;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +80,8 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    skills: SkillsSelect<false> | SkillsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +91,20 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    hero: Hero;
+    'now-bar': NowBar;
+    about: About;
+    contact: Contact;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    hero: HeroSelect<false> | HeroSelect<true>;
+    'now-bar': NowBarSelect<false> | NowBarSelect<true>;
+    about: AboutSelect<false> | AboutSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -148,7 +164,7 @@ export interface User {
  */
 export interface Media {
   id: number;
-  alt: string;
+  alt?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -160,6 +176,125 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  /**
+   * Lower number = shown first
+   */
+  order?: number | null;
+  /**
+   * Show this project in the featured spotlight
+   */
+  featured?: boolean | null;
+  /**
+   * e.g. 001, 002, 003
+   */
+  num: string;
+  type: 'platform' | 'tool' | 'fullstack' | 'ml' | 'finance' | 'mobile' | 'design' | 'other';
+  year: string;
+  title: string;
+  /**
+   * The italic/highlighted part of the project title
+   */
+  titleEm: string;
+  /**
+   * One-line summary shown on card
+   */
+  sub: string;
+  /**
+   * Full description shown in featured view
+   */
+  desc: string;
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  liveUrl?: string | null;
+  githubUrl?: string | null;
+  /**
+   * Large decorative text/emoji shown in visual area (e.g. 3D, TS, ₿)
+   */
+  visLabel?: string | null;
+  /**
+   * Small caption under the visual (e.g. interactive · collab)
+   */
+  vcText?: string | null;
+  /**
+   * Tech stack flow diagram rows
+   */
+  architecture?:
+    | {
+        /**
+         * e.g. data, realtime, deploy
+         */
+        label: string;
+        boxes?:
+          | {
+              tech: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Slides shown in the featured project visual area
+   */
+  slides?:
+    | {
+        label: string;
+        /**
+         * Upload a screenshot. If empty, uses color/icon fallback.
+         */
+        image?: (number | null) | Media;
+        /**
+         * Hex color for fallback visual (e.g. #2d3561)
+         */
+        color?: string | null;
+        /**
+         * Hex color for slide background (e.g. #eaeaf8)
+         */
+        bg?: string | null;
+        /**
+         * Symbol shown when no image uploaded
+         */
+        icon?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skills".
+ */
+export interface Skill {
+  id: number;
+  name: string;
+  category: 'frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages' | 'mobile' | 'ai_ml';
+  /**
+   * Slug from simpleicons.org — e.g. "react", "typescript", "nextdotjs". Used to render the brand icon automatically.
+   */
+  iconSlug?: string | null;
+  /**
+   * Brand color hex e.g. #61DAFB for React. Used for icon tint.
+   */
+  iconColor?: string | null;
+  /**
+   * Mark skills you are actively using right now
+   */
+  hot?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -192,6 +327,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'skills';
+        value: number | Skill;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -277,6 +420,69 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  order?: T;
+  featured?: T;
+  num?: T;
+  type?: T;
+  year?: T;
+  title?: T;
+  titleEm?: T;
+  sub?: T;
+  desc?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  liveUrl?: T;
+  githubUrl?: T;
+  visLabel?: T;
+  vcText?: T;
+  architecture?:
+    | T
+    | {
+        label?: T;
+        boxes?:
+          | T
+          | {
+              tech?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  slides?:
+    | T
+    | {
+        label?: T;
+        image?: T;
+        color?: T;
+        bg?: T;
+        icon?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skills_select".
+ */
+export interface SkillsSelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
+  iconSlug?: T;
+  iconColor?: T;
+  hot?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -314,6 +520,250 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  name: string;
+  tagline?: string | null;
+  status?: ('available' | 'open' | 'busy' | 'unavailable') | null;
+  location?: string | null;
+  timezone?: string | null;
+  /**
+   * Small version text shown in the top navigation bar
+   */
+  navVersion?: string | null;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+  readcvUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero".
+ */
+export interface Hero {
+  id: number;
+  /**
+   * Small text above the name (e.g. "available for work")
+   */
+  eyebrow?: string | null;
+  firstName: string;
+  role: string;
+  bio: string;
+  /**
+   * Key-value lines shown in the terminal-style sys box
+   */
+  sysBoxLines?:
+    | {
+        key: string;
+        value: string;
+        highlight?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Text in the "currently building" bar below the hero
+   */
+  nowBarText?: string | null;
+  /**
+   * Small stats shown in the hero bottom bar (e.g. projects, experience)
+   */
+  statsBar?:
+    | {
+        /**
+         * e.g. 5+
+         */
+        value: string;
+        /**
+         * e.g. projects shipped
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "now-bar".
+ */
+export interface NowBar {
+  id: number;
+  /**
+   * Small prefix label (e.g. "currently building")
+   */
+  label?: string | null;
+  text: string;
+  link?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about".
+ */
+export interface About {
+  id: number;
+  eyebrow?: string | null;
+  heading?: string | null;
+  bio1?: string | null;
+  bio2?: string | null;
+  image?: (number | null) | Media;
+  /**
+   * Key-value facts shown in the about section grid
+   */
+  facts?:
+    | {
+        /**
+         * e.g. based_in, experience, focus
+         */
+        key: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The numbered process steps shown below the bio
+   */
+  processSteps?:
+    | {
+        /**
+         * e.g. 01, 02, 03
+         */
+        number: string;
+        title: string;
+        desc: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: number;
+  eyebrow?: string | null;
+  heading?: string | null;
+  subtext?: string | null;
+  email: string;
+  responseTime?: string | null;
+  availability?: ('open' | 'busy' | 'closed') | null;
+  preferredWork?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  name?: T;
+  tagline?: T;
+  status?: T;
+  location?: T;
+  timezone?: T;
+  navVersion?: T;
+  githubUrl?: T;
+  linkedinUrl?: T;
+  readcvUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero_select".
+ */
+export interface HeroSelect<T extends boolean = true> {
+  eyebrow?: T;
+  firstName?: T;
+  role?: T;
+  bio?: T;
+  sysBoxLines?:
+    | T
+    | {
+        key?: T;
+        value?: T;
+        highlight?: T;
+        id?: T;
+      };
+  nowBarText?: T;
+  statsBar?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "now-bar_select".
+ */
+export interface NowBarSelect<T extends boolean = true> {
+  label?: T;
+  text?: T;
+  link?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about_select".
+ */
+export interface AboutSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  bio1?: T;
+  bio2?: T;
+  image?: T;
+  facts?:
+    | T
+    | {
+        key?: T;
+        value?: T;
+        id?: T;
+      };
+  processSteps?:
+    | T
+    | {
+        number?: T;
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subtext?: T;
+  email?: T;
+  responseTime?: T;
+  availability?: T;
+  preferredWork?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
