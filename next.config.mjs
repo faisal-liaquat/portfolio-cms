@@ -7,6 +7,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const nextConfig = {
   images: {
     remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'cdn.simpleicons.org' },
     ],
@@ -46,13 +47,10 @@ const nextConfig = {
                 ? `script-src 'self' 'unsafe-inline' 'unsafe-eval'`
                 : `script-src 'self' 'unsafe-inline'`,
 
-              // Google Fonts stylesheet needs to be allowed
               `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
 
-              // Images: self + Cloudinary + SimpleIcons + data URIs
-              `img-src 'self' data: blob: https://res.cloudinary.com https://cdn.simpleicons.org`,
+              `img-src 'self' data: blob: http://localhost:3000 https://res.cloudinary.com https://cdn.simpleicons.org`,
 
-              // Google Fonts actual font files come from gstatic.com
               `font-src 'self' data: https://fonts.gstatic.com`,
 
               isDev
