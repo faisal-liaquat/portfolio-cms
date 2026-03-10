@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { adminOnly } from '@/access/publicRead'
+import { revalidateGlobal } from '@/hooks/revalidate'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -11,18 +12,21 @@ export const SiteSettings: GlobalConfig = {
     read: () => true,
     update: adminOnly,
   },
+  hooks: {
+    afterChange: [revalidateGlobal],
+  },
   fields: [
     {
       name: 'name',
       type: 'text',
       label: 'Your Name',
       required: true,
-      defaultValue: 'Faisal',
+      defaultValue: 'Faisal Liaquat',
     },
     {
       name: 'tagline',
       type: 'text',
-      label: 'Tagline / Title',
+      label: 'Tagline',
       defaultValue: 'Full-Stack Developer',
     },
     {
@@ -31,9 +35,8 @@ export const SiteSettings: GlobalConfig = {
       label: 'Availability Status',
       options: [
         { label: 'Available', value: 'available' },
-        { label: 'Open to Offers', value: 'open' },
         { label: 'Busy', value: 'busy' },
-        { label: 'Not Available', value: 'unavailable' },
+        { label: 'Open to offers', value: 'open to offers' },
       ],
       defaultValue: 'available',
     },
@@ -52,10 +55,19 @@ export const SiteSettings: GlobalConfig = {
     {
       name: 'navVersion',
       type: 'text',
-      label: 'Nav Version Label',
+      label: 'Nav Version Tag',
       defaultValue: 'v1.0',
       admin: {
-        description: 'Small version text shown in the top navigation bar',
+        description: 'Small version label shown in nav (e.g. v1.0)',
+      },
+    },
+    {
+      name: 'lastCommit',
+      type: 'text',
+      label: 'Last Commit Hash (short)',
+      defaultValue: 'a4f3c1',
+      admin: {
+        description: '6-char git hash shown in nav. Update manually or via CI.',
       },
     },
     {
@@ -72,6 +84,22 @@ export const SiteSettings: GlobalConfig = {
       name: 'readcvUrl',
       type: 'text',
       label: 'Read.cv URL',
+    },
+    {
+      name: 'nowBarChips',
+      type: 'array',
+      label: 'Now Bar Tech Chips',
+      admin: {
+        description: 'Tech chips shown in the Now Bar strip (e.g. TypeScript, Next.js)',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          label: 'Chip Label',
+          required: true,
+        },
+      ],
     },
   ],
 }

@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { adminOnly } from '@/access/publicRead'
+import { revalidateGlobal } from '@/hooks/revalidate'
 
 export const NowBar: GlobalConfig = {
   slug: 'now-bar',
@@ -10,6 +11,9 @@ export const NowBar: GlobalConfig = {
   access: {
     read: () => true,
     update: adminOnly,
+  },
+  hooks: {
+    afterChange: [revalidateGlobal],
   },
   fields: [
     {
