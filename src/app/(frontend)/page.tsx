@@ -1,5 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import NowBar from './components/NowBar'
@@ -11,9 +12,11 @@ import Footer from './components/Footer'
 import CursorAndProgress from './components/CursorAndProgress'
 import ScrollReveal from './components/ScrollReveal'
 
+// Static generation: revalidate every 60s as fallback,
+// but on-demand revalidation from admin hooks fires instantly
 export const revalidate = 60
 
-export default async function HomePage() {
+async function getPageData() {
   const payload = await getPayload({ config })
 
   const [heroData, nowBarData, aboutData, contactData, siteData] = await Promise.all([
@@ -24,24 +27,51 @@ export default async function HomePage() {
     payload.findGlobal({ slug: 'site-settings' }),
   ])
 
+  // depth: 2 resolves media relationships (image.url becomes available)
   const projectsRes = await payload.find({
     collection: 'projects',
     sort: 'order',
     limit: 20,
+    depth: 2,
   })
 
   const skillsRes = await payload.find({
     collection: 'skills',
     sort: 'order',
     limit: 100,
+    depth: 1,
   })
 
   const experienceRes = await payload.find({
     collection: 'experience',
     sort: 'order',
     limit: 20,
-    depth: 1,
+    depth: 2,
   })
+
+  return {
+    heroData,
+    nowBarData,
+    aboutData,
+    contactData,
+    siteData,
+    projectsRes,
+    skillsRes,
+    experienceRes,
+  }
+}
+
+export default async function HomePage() {
+  const {
+    heroData,
+    nowBarData,
+    aboutData,
+    contactData,
+    siteData,
+    projectsRes,
+    skillsRes,
+    experienceRes,
+  } = await getPageData()
 
   const socials = [
     siteData.githubUrl && { platform: 'GitHub', url: siteData.githubUrl },
@@ -49,14 +79,17 @@ export default async function HomePage() {
     siteData.readcvUrl && { platform: 'Read.cv', url: siteData.readcvUrl },
   ].filter(Boolean) as { platform: string; url: string }[]
 
+  // chips come from DB now
+  const chips = (siteData.nowBarChips ?? []).map((c: { label: string }) => c.label)
+
   return (
     <>
       <CursorAndProgress />
       <Nav
         name={siteData.name}
-        navVersion={siteData.navVersion ?? 'v1.0.0'}
+        navVersion={siteData.navVersion ?? 'v1.0'}
         status={siteData.status ?? 'available'}
-        lastCommit="a4f3c1"
+        lastCommit={siteData.lastCommit ?? 'a4f3c1'}
       />
       <Hero
         eyebrow={heroData.eyebrow ?? ''}
@@ -69,7 +102,7 @@ export default async function HomePage() {
       <NowBar
         label={nowBarData.label ?? 'currently_building'}
         text={nowBarData.text}
-        chips={['TypeScript', 'Node.js', 'Express.js', 'GitHub Actions', 'Apify']}
+        chips={chips.length > 0 ? chips : ['TypeScript', 'Node.js', 'Next.js']}
       />
       <section id="projects" className="sec">
         <div className="sec-hd rev">
@@ -101,7 +134,7 @@ export default async function HomePage() {
         preferredWork={contactData.preferredWork ?? 'freelance · collab · ft'}
         socials={socials}
       />
-      <Footer name={siteData.name} year={2025} />
+      <Footer name={siteData.name} year={new Date().getFullYear()} />
       <ScrollReveal />
     </>
   )
