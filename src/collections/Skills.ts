@@ -1,3 +1,4 @@
+// src/collections/Skills.ts
 import type { CollectionConfig } from 'payload'
 import { adminOnly } from '@/access/publicRead'
 import { revalidateCollection } from '@/hooks/revalidate'
@@ -6,7 +7,7 @@ export const Skills: CollectionConfig = {
   slug: 'skills',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'hot', 'order'],
+    defaultColumns: ['name', 'iconSlug', 'category', 'hot', 'order'],
     group: 'Portfolio',
   },
   access: {
@@ -25,6 +26,37 @@ export const Skills: CollectionConfig = {
       label: 'Skill Name',
       required: true,
     },
+    // ── Icon picker (custom UI field — no data stored here) ──────────
+    {
+      name: 'iconPicker',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/payload/IconPickerField#IconPickerField',
+        },
+      },
+    },
+    // ── These two fields are what actually store the data ────────────
+    {
+      name: 'iconSlug',
+      type: 'text',
+      label: 'Icon Slug',
+      admin: {
+        description:
+          'Auto-filled by the icon picker above. You can also type a simpleicons.org slug manually.',
+        components: {
+          Cell: '@/components/payload/IconPickerCell#IconPickerCell',
+        },
+      },
+    },
+    {
+      name: 'iconColor',
+      type: 'text',
+      label: 'Icon Color (hex)',
+      admin: {
+        description: 'Auto-filled by the icon picker. Brand hex color, e.g. #61DAFB.',
+      },
+    },
     {
       name: 'category',
       type: 'select',
@@ -42,29 +74,12 @@ export const Skills: CollectionConfig = {
       ],
     },
     {
-      name: 'iconSlug',
-      type: 'text',
-      label: 'Simple Icons Slug',
-      admin: {
-        description:
-          'Slug from simpleicons.org — e.g. "react", "typescript", "nextdotjs". Used to render the brand icon automatically.',
-      },
-    },
-    {
-      name: 'iconColor',
-      type: 'text',
-      label: 'Icon Color (hex)',
-      admin: {
-        description: 'Brand color hex e.g. #61DAFB for React. Used for icon tint.',
-      },
-    },
-    {
       name: 'hot',
       type: 'checkbox',
       label: 'Currently Using (Hot)',
       defaultValue: false,
       admin: {
-        description: 'Mark skills you are actively using right now',
+        description: 'Mark skills you are actively using right now.',
       },
     },
     {
