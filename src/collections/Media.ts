@@ -20,5 +20,9 @@ export const Media: CollectionConfig = {
       label: 'Alt Text',
     },
   ],
-  upload: true,
+  upload: {
+    staticDir: 'media',
+    mimeTypes: ['image/*', 'image/svg+xml'],
+    adminThumbnail: 'thumbnail',
+  },
 }
