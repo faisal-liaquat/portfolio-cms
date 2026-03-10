@@ -590,16 +590,29 @@ export interface SiteSetting {
   id: number;
   name: string;
   tagline?: string | null;
-  status?: ('available' | 'open' | 'busy' | 'unavailable') | null;
+  status?: ('available' | 'busy' | 'open to offers') | null;
   location?: string | null;
   timezone?: string | null;
   /**
-   * Small version text shown in the top navigation bar
+   * Small version label shown in nav (e.g. v1.0)
    */
   navVersion?: string | null;
+  /**
+   * 6-char git hash shown in nav. Update manually or via CI.
+   */
+  lastCommit?: string | null;
   githubUrl?: string | null;
   linkedinUrl?: string | null;
   readcvUrl?: string | null;
+  /**
+   * Tech chips shown in the Now Bar strip (e.g. TypeScript, Next.js)
+   */
+  nowBarChips?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -733,9 +746,16 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   location?: T;
   timezone?: T;
   navVersion?: T;
+  lastCommit?: T;
   githubUrl?: T;
   linkedinUrl?: T;
   readcvUrl?: T;
+  nowBarChips?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
