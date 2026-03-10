@@ -10,47 +10,40 @@ const folder = 'portfolio-media'
 
 const stripExtension = (filename: string) => filename.replace(/\.[^/.]+$/, '')
 
-export const cloudinaryAdapter = () => ({
-  name: 'cloudinary' as const,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const cloudinaryAdapter =
+  (): any =>
+  ({ prefix = '' }: { collection?: unknown; prefix?: string } = {}) => ({
+    name: 'cloudinary',
 
-  handleUpload: async ({ file }: { file: { filename: string; buffer: Buffer } }) => {
-    await new Promise<void>((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'auto',
-          public_id: `${folder}/${stripExtension(file.filename)}`,
-          overwrite: true,
-        },
-        (error, result) => {
-          if (error || !result) return reject(error)
-          resolve()
-        },
-      )
-      stream.end(file.buffer)
-    })
-  },
+    handleUpload: async ({ file }: { file: { filename: string; buffer: Buffer } }) => {
+      const publicId = `${folder}/${prefix ? prefix + '/' : ''}${stripExtension(file.filename)}`
+      await new Promise<void>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: 'auto', public_id: publicId, overwrite: true },
+          (error, result) => {
+            if (error || !result) return reject(error)
+            resolve()
+          },
+        )
+        stream.end(file.buffer)
+      })
+    },
 
-  handleDelete: async ({ filename }: { filename: string }) => {
-    await cloudinary.uploader.destroy(`${folder}/${stripExtension(filename)}`, {
-      resource_type: 'image',
-    })
-  },
+    handleDelete: async ({ filename }: { filename: string }) => {
+      const publicId = `${folder}/${prefix ? prefix + '/' : ''}${stripExtension(filename)}`
+      await cloudinary.uploader.destroy(publicId, { resource_type: 'image' })
+    },
 
-  generateURL: async ({ filename }: { filename: string }) => {
-    return cloudinary.url(`${folder}/${stripExtension(filename)}`, {
-      secure: true,
-      resource_type: 'auto',
-    })
-  },
+    generateURL: async ({ filename }: { filename: string }) => {
+      const publicId = `${folder}/${prefix ? prefix + '/' : ''}${stripExtension(filename)}`
+      return cloudinary.url(publicId, { secure: true, resource_type: 'auto' })
+    },
 
-  staticHandler: async (
-    _req: Request,
-    { params }: { params: { filename: string } },
-  ): Promise<Response> => {
-    const url = cloudinary.url(`${folder}/${stripExtension(params.filename)}`, {
-      secure: true,
-      resource_type: 'auto',
-    })
-    return Response.redirect(url, 302)
-  },
-})
+    staticHandler: async (req: unknown, context: unknown): Promise<Response> => {
+      const { params } = context as { params: { filename: string } }
+      const publicId = `${folder}/${prefix ? prefix + '/' : ''}${stripExtension(params.filename)}`
+      const url = cloudinary.url(publicId, { secure: true, resource_type: 'auto' })
+      return Response.redirect(url, 302)
+    },
+  })
