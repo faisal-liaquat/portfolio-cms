@@ -281,17 +281,17 @@ export interface Project {
 export interface Skill {
   id: number;
   name: string;
-  category: 'frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages' | 'mobile' | 'ai_ml';
   /**
-   * Slug from simpleicons.org — e.g. "react", "typescript", "nextdotjs". Used to render the brand icon automatically.
+   * Auto-filled by the icon picker above. You can also type a simpleicons.org slug manually.
    */
   iconSlug?: string | null;
   /**
-   * Brand color hex e.g. #61DAFB for React. Used for icon tint.
+   * Auto-filled by the icon picker. Brand hex color, e.g. #61DAFB.
    */
   iconColor?: string | null;
+  category: 'frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages' | 'mobile' | 'ai_ml';
   /**
-   * Mark skills you are actively using right now
+   * Mark skills you are actively using right now.
    */
   hot?: boolean | null;
   order?: number | null;
@@ -516,9 +516,9 @@ export interface ProjectsSelect<T extends boolean = true> {
  */
 export interface SkillsSelect<T extends boolean = true> {
   name?: T;
-  category?: T;
   iconSlug?: T;
   iconColor?: T;
+  category?: T;
   hot?: T;
   order?: T;
   updatedAt?: T;
