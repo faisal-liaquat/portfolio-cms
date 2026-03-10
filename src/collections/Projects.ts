@@ -1,3 +1,4 @@
+import { revalidateCollection } from '@/hooks/revalidate'
 import type { CollectionConfig } from 'payload'
 import { adminOnly } from '@/access/publicRead'
 
@@ -13,6 +14,9 @@ export const Projects: CollectionConfig = {
     create: adminOnly,
     update: adminOnly,
     delete: adminOnly,
+  },
+  hooks: {
+    afterChange: [revalidateCollection],
   },
   fields: [
     {

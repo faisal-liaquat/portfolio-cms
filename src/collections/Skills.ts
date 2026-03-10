@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { adminOnly } from '@/access/publicRead'
+import { revalidateCollection } from '@/hooks/revalidate'
 
 export const Skills: CollectionConfig = {
   slug: 'skills',
@@ -13,6 +14,9 @@ export const Skills: CollectionConfig = {
     create: adminOnly,
     update: adminOnly,
     delete: adminOnly,
+  },
+  hooks: {
+    afterChange: [revalidateCollection],
   },
   fields: [
     {
