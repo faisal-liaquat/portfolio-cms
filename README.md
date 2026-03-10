@@ -25,10 +25,10 @@ See `.env.example` for all required variables.
 
 ## Phases
 - [x] Phase 1 — Repo & Environment Setup
-- [ ] Phase 2 — Content Schema
-- [ ] Phase 3 — Component Conversion
-- [ ] Phase 4 — CMS Integration
-- [ ] Phase 5 — Skill Icon Library
-- [ ] Phase 6 — Security Hardening
-- [ ] Phase 7 — Deployment
+- [x] Phase 2 — Content Schema
+- [x] Phase 3 — Component Conversion
+- [x] Phase 4 — CMS Integration
+- [x] Phase 5 — Skill Icon Library
+- [x] Phase 6 — Security Hardening
+- [x] Phase 7 — Deployment
 - [ ] Phase 8 — QA & Polish
