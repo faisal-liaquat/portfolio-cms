@@ -13,6 +13,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Skills } from './collections/Skills'
+import { Experience } from './collections/Experience'
 
 import { SiteSettings } from './globals/SiteSettings'
 import { Hero } from './globals/Hero'
@@ -33,7 +34,7 @@ export default buildConfig({
       titleSuffix: '— Portfolio CMS',
     },
   },
-  collections: [Users, Media, Projects, Skills],
+  collections: [Users, Media, Projects, Skills, Experience],
   globals: [SiteSettings, Hero, NowBar, About, Contact],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

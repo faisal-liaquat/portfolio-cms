@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     projects: Project;
     skills: Skill;
+    experience: Experience;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     skills: SkillsSelect<false> | SkillsSelect<true>;
+    experience: ExperienceSelect<false> | ExperienceSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -298,6 +300,43 @@ export interface Skill {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience".
+ */
+export interface Experience {
+  id: number;
+  /**
+   * Lower number = shown first
+   */
+  order?: number | null;
+  company: string;
+  /**
+   * Logo shown next to the company name
+   */
+  companyLogo?: (number | null) | Media;
+  /**
+   * e.g. Remote · Pakistan, or Lahore, Pakistan
+   */
+  location?: string | null;
+  role: string;
+  employmentType?: ('full-time' | 'part-time' | 'internship' | 'contract' | 'freelance') | null;
+  /**
+   * e.g. Dec 2025, Jul 2024
+   */
+  startDate: string;
+  /**
+   * Leave blank if currently working here
+   */
+  endDate?: string | null;
+  current?: boolean | null;
+  /**
+   * Short summary of your work there
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -335,6 +374,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'skills';
         value: number | Skill;
+      } | null)
+    | ({
+        relationTo: 'experience';
+        value: number | Experience;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -478,6 +521,24 @@ export interface SkillsSelect<T extends boolean = true> {
   iconColor?: T;
   hot?: T;
   order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience_select".
+ */
+export interface ExperienceSelect<T extends boolean = true> {
+  order?: T;
+  company?: T;
+  companyLogo?: T;
+  location?: T;
+  role?: T;
+  employmentType?: T;
+  startDate?: T;
+  endDate?: T;
+  current?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
 }
