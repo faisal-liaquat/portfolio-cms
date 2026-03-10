@@ -121,7 +121,7 @@ async function seed() {
       order: 1,
       featured: true,
       num: '001',
-      type: 'platform',
+      type: 'platform' as const,
       year: '2026',
       title: 'Digital Exhibition',
       titleEm: 'Builder',
@@ -164,7 +164,7 @@ async function seed() {
       order: 2,
       featured: false,
       num: '002',
-      type: 'tool',
+      type: 'tool' as const,
       year: '2025',
       title: 'Apify Scraping',
       titleEm: 'Suite',
@@ -202,7 +202,7 @@ async function seed() {
       order: 3,
       featured: false,
       num: '003',
-      type: 'fullstack',
+      type: 'fullstack' as const,
       year: '2024',
       title: 'ClearBooks',
       titleEm: 'Accounting',
@@ -238,7 +238,7 @@ async function seed() {
       order: 4,
       featured: false,
       num: '004',
-      type: 'ml',
+      type: 'ml' as const,
       year: '2024',
       title: 'Football Analysis',
       titleEm: 'System',
@@ -271,7 +271,7 @@ async function seed() {
       order: 5,
       featured: false,
       num: '005',
-      type: 'finance',
+      type: 'finance' as const,
       year: '2026',
       title: 'PennyWise',
       titleEm: 'Finance',
@@ -306,13 +306,19 @@ async function seed() {
   ]
 
   for (const project of projectsData) {
-    await payload.create({ collection: 'projects', data: project as any })
+    await payload.create({ collection: 'projects', data: project })
     console.log(`✅ Project seeded: ${project.title}`)
   }
 
   // ── SKILLS ─────────────────────────────────────────
-  const skillsData = [
-    // Frontend
+  const skillsData: Array<{
+    name: string
+    category: 'frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages' | 'ai_ml'
+    iconSlug: string
+    iconColor: string
+    hot: boolean
+    order: number
+  }> = [
     {
       name: 'React',
       category: 'frontend',
@@ -353,7 +359,6 @@ async function seed() {
       hot: false,
       order: 5,
     },
-    // Backend
     {
       name: 'Node.js',
       category: 'backend',
@@ -378,7 +383,6 @@ async function seed() {
       hot: false,
       order: 8,
     },
-    // Database
     {
       name: 'PostgreSQL',
       category: 'database',
@@ -403,7 +407,6 @@ async function seed() {
       hot: true,
       order: 11,
     },
-    // DevOps
     {
       name: 'Vercel',
       category: 'devops',
@@ -428,7 +431,6 @@ async function seed() {
       hot: true,
       order: 14,
     },
-    // Tools
     { name: 'Git', category: 'tools', iconSlug: 'git', iconColor: '#F05032', hot: true, order: 15 },
     {
       name: 'Payload CMS',
@@ -438,7 +440,6 @@ async function seed() {
       hot: true,
       order: 16,
     },
-    // Languages
     {
       name: 'JavaScript',
       category: 'languages',
@@ -455,7 +456,6 @@ async function seed() {
       hot: false,
       order: 18,
     },
-    // AI/ML
     {
       name: 'OpenCV',
       category: 'ai_ml',
@@ -470,6 +470,39 @@ async function seed() {
     await payload.create({ collection: 'skills', data: skill })
     console.log(`✅ Skill seeded: ${skill.name}`)
   }
+
+  // ── EXPERIENCE ────────────────────────────────────
+  await payload.create({
+    collection: 'experience',
+    data: {
+      order: 1,
+      company: 'Rogue Agency',
+      location: 'Remote',
+      role: 'Software Developer',
+      employmentType: 'full-time',
+      startDate: 'Dec 2025',
+      endDate: '',
+      current: true,
+      description:
+        'Built and maintained a TypeScript monorepo of automated web scraping actors on the Apify platform, including scrapers for GitHub, Dribbble, and Godly.website. Developed shared infrastructure packages, a REST API with Express.js, and CI/CD pipelines via GitHub Actions.',
+    },
+  })
+  await payload.create({
+    collection: 'experience',
+    data: {
+      order: 2,
+      company: 'Logico Solutions',
+      location: 'Lahore, Pakistan',
+      role: 'Web Development Intern',
+      employmentType: 'internship',
+      startDate: 'Jul 2024',
+      endDate: 'Sep 2024',
+      current: false,
+      description:
+        'Contributed to development and maintenance of web applications using HTML, CSS, JavaScript, and C#. Collaborated with cross-functional teams to enhance functionality and optimize performance.',
+    },
+  })
+  console.log('✅ Experience seeded')
 
   console.log('\n🎉 Seeding complete!')
   process.exit(0)
