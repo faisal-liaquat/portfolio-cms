@@ -1,58 +1,76 @@
-import { v2 as cloudinary } from 'cloudinary'
+import * as dotenv from 'dotenv'
+import { resolve } from 'path'
+dotenv.config({ path: resolve(process.cwd(), '.env.local') })
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
-  api_key: process.env.CLOUDINARY_API_KEY || '',
-  api_secret: process.env.CLOUDINARY_API_SECRET || '',
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import path from 'path'
+import { buildConfig } from 'payload'
+import { fileURLToPath } from 'url'
+import sharp from 'sharp'
+
+import { Users } from './collections/Users'
+import { Media } from './collections/Media'
+import { Projects } from './collections/Projects'
+import { Skills } from './collections/Skills'
+import { Experience } from './collections/Experience'
+
+import { SiteSettings } from './globals/SiteSettings'
+import { Hero } from './globals/Hero'
+import { NowBar } from './globals/NowBar'
+import { About } from './globals/About'
+import { Contact } from './globals/Contact'
+
+import { cloudinaryAdapter } from './lib/cloudinaryAdapter'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
+const hasCloudinary =
+  !!process.env.CLOUDINARY_CLOUD_NAME &&
+  !!process.env.CLOUDINARY_API_KEY &&
+  !!process.env.CLOUDINARY_API_SECRET
+
+export default buildConfig({
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
+    meta: {
+      titleSuffix: '— Portfolio CMS',
+    },
+  },
+  collections: [Users, Media, Projects, Skills, Experience],
+  globals: [SiteSettings, Hero, NowBar, About, Contact],
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI || '',
+    },
+  }),
+  sharp,
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
+  plugins: hasCloudinary
+    ? [
+        cloudStoragePlugin({
+          collections: {
+            media: {
+              adapter: cloudinaryAdapter(),
+              disableLocalStorage: true,
+            },
+          },
+        }),
+      ]
+    : [],
+  upload: {
+    limits: {
+      fileSize: 10000000,
+    },
+  },
 })
-
-const folder = 'portfolio-media'
-
-const stripExtension = (filename: string) => filename.replace(/\.[^/.]+$/, '')
-
-export const cloudinaryAdapter = () => {
-  return () => ({
-    name: 'cloudinary' as const,
-
-    handleUpload: async ({ file }: { file: { filename: string; buffer: Buffer } }) => {
-      await new Promise<void>((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: 'auto',
-            public_id: `${folder}/${stripExtension(file.filename)}`,
-            overwrite: true,
-          },
-          (error, result) => {
-            if (error || !result) return reject(error)
-            resolve()
-          },
-        )
-        stream.end(file.buffer)
-      })
-    },
-
-    handleDelete: async ({ filename }: { filename: string }) => {
-      await cloudinary.uploader.destroy(`${folder}/${stripExtension(filename)}`, {
-        resource_type: 'image',
-      })
-    },
-
-    generateURL: async ({ filename }: { filename: string }) => {
-      return cloudinary.url(`${folder}/${stripExtension(filename)}`, {
-        secure: true,
-        resource_type: 'auto',
-      })
-    },
-
-    staticHandler: async (
-      _req: Request,
-      { params }: { params: { filename: string } },
-    ): Promise<Response> => {
-      const url = cloudinary.url(`${folder}/${stripExtension(params.filename)}`, {
-        secure: true,
-        resource_type: 'auto',
-      })
-      return Response.redirect(url, 302)
-    },
-  })
-}
