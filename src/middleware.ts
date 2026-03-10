@@ -51,6 +51,7 @@ export function middleware(req: NextRequest) {
     '/api/users/logout',
     '/api/users/refresh-token',
     '/api/users/me',
+    '/api/users/first-register',
   ]
   if (
     pathname.startsWith('/api/users') &&
