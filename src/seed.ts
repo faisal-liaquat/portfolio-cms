@@ -21,9 +21,17 @@ async function seed() {
       location: 'Pakistan',
       timezone: 'PKT',
       navVersion: 'v1.0',
+      lastCommit: 'a4f3c1',
       githubUrl: 'https://github.com/faisal-liaquat',
       linkedinUrl: 'https://www.linkedin.com/in/faisal-liaquat-73aa47231/',
       readcvUrl: 'https://read.cv/',
+      nowBarChips: [
+        { label: 'TypeScript' },
+        { label: 'Node.js' },
+        { label: 'Express.js' },
+        { label: 'GitHub Actions' },
+        { label: 'Apify' },
+      ],
     },
   })
   console.log('✅ SiteSettings seeded')
