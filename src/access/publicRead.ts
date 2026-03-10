@@ -1,12 +1,11 @@
+// src/access/publicRead.ts
 import type { AccessArgs } from 'payload'
 
-// Anyone can read, only authenticated can write
-export const publicRead = ({ req: { user } }: AccessArgs): boolean => {
-  // For read operations this returns true (public can read)
-  // For write operations the collection uses isAdmin
-  return true
-}
+// Public read, admin write
+export const publicRead = (): boolean => true
 
-export const adminOnly = ({ req: { user } }: AccessArgs): boolean => {
-  return Boolean(user)
-}
+// Must be logged in
+export const adminOnly = ({ req: { user } }: AccessArgs): boolean => Boolean(user)
+
+// Absolute lock — nobody can do this (used to block user creation/deletion)
+export const nobody = (): boolean => false
