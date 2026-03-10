@@ -43,20 +43,17 @@ export const cloudinaryAdapter =
 
     generateURL: async ({ filename }: { filename: string }) => {
       const publicId = buildPublicId(filename, prefix)
-      const url = cloudinary.url(publicId, {
-        secure: true,
-        resource_type: 'auto',
-      })
-      return url
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME || ''
+      const encodedId = publicId.split('/').map(encodeURIComponent).join('/')
+      return `https://res.cloudinary.com/${cloudName}/image/upload/${encodedId}`
     },
 
     staticHandler: async (_req: unknown, context: unknown): Promise<Response> => {
       const { params } = context as { params: { filename: string } }
       const publicId = buildPublicId(params.filename, prefix)
-      const url = cloudinary.url(publicId, {
-        secure: true,
-        resource_type: 'auto',
-      })
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME || ''
+      const encodedId = publicId.split('/').map(encodeURIComponent).join('/')
+      const url = `https://res.cloudinary.com/${cloudName}/image/upload/${encodedId}`
       return Response.redirect(url, 302)
     },
   })
