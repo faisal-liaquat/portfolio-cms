@@ -1,6 +1,5 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { unstable_cache } from 'next/cache'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import NowBar from './components/NowBar'
@@ -12,8 +11,6 @@ import Footer from './components/Footer'
 import CursorAndProgress from './components/CursorAndProgress'
 import ScrollReveal from './components/ScrollReveal'
 
-// Static generation: revalidate every 60s as fallback,
-// but on-demand revalidation from admin hooks fires instantly
 export const revalidate = 60
 
 async function getPageData() {
@@ -22,12 +19,11 @@ async function getPageData() {
   const [heroData, nowBarData, aboutData, contactData, siteData] = await Promise.all([
     payload.findGlobal({ slug: 'hero' }),
     payload.findGlobal({ slug: 'now-bar' }),
-    payload.findGlobal({ slug: 'about' }),
+    payload.findGlobal({ slug: 'about', depth: 1 }), // depth:1 resolves image.url
     payload.findGlobal({ slug: 'contact' }),
     payload.findGlobal({ slug: 'site-settings' }),
   ])
 
-  // depth: 2 resolves media relationships (image.url becomes available)
   const projectsRes = await payload.find({
     collection: 'projects',
     sort: 'order',
@@ -79,7 +75,6 @@ export default async function HomePage() {
     siteData.readcvUrl && { platform: 'Read.cv', url: siteData.readcvUrl },
   ].filter(Boolean) as { platform: string; url: string }[]
 
-  // chips come from DB now
   const chips = (siteData.nowBarChips ?? []).map((c: { label: string }) => c.label)
 
   return (
@@ -123,6 +118,11 @@ export default async function HomePage() {
         facts={aboutData.facts ?? []}
         processSteps={aboutData.processSteps ?? []}
         experience={experienceRes.docs as any}
+        profileImage={
+          aboutData.image && typeof aboutData.image === 'object'
+            ? ((aboutData.image as { url?: string }).url ?? null)
+            : null
+        }
       />
       <Contact
         eyebrow={contactData.eyebrow ?? "let's work together"}

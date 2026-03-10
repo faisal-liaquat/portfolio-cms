@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import ExperienceSection from './ExperienceSection'
 
 interface Fact {
@@ -31,6 +32,7 @@ interface Props {
   facts: Fact[]
   processSteps: ProcessStep[]
   experience: ExperienceItem[]
+  profileImage?: string | null
 }
 
 export default function About({
@@ -41,10 +43,14 @@ export default function About({
   facts,
   processSteps,
   experience,
+  profileImage,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    // Only run the canvas animation if there's no profile image
+    if (profileImage) return
+
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -99,7 +105,7 @@ export default function About({
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
     }
-  }, [])
+  }, [profileImage])
 
   return (
     <section id="about" className="sec">
@@ -113,8 +119,20 @@ export default function About({
       <div className="ab-grid">
         <div className="rev">
           <div className="ab-img">
-            <canvas ref={canvasRef} id="portrait-canvas" />
-            <div className="ab-letter">F.</div>
+            {profileImage ? (
+              <Image
+                src={profileImage}
+                alt="Faisal"
+                fill
+                priority
+                style={{ objectFit: 'cover', borderRadius: '12px' }}
+              />
+            ) : (
+              <>
+                <canvas ref={canvasRef} id="portrait-canvas" />
+                <div className="ab-letter">F.</div>
+              </>
+            )}
             <div className="ab-foot">
               <span>Faisal — Dev</span>
               <span>PK · 2025</span>
