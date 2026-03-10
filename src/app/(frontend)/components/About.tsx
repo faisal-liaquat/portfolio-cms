@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import Image from 'next/image'
 import ExperienceSection from './ExperienceSection'
 
 interface Fact {
@@ -120,12 +119,18 @@ export default function About({
         <div className="rev">
           <div className="ab-img">
             {profileImage ? (
-              <Image
+              <img
                 src={profileImage}
                 alt="Faisal"
-                fill
-                priority
-                style={{ objectFit: 'cover', borderRadius: '12px' }}
+                style={{
+                  objectFit: 'cover',
+                  borderRadius: '12px',
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                }}
               />
             ) : (
               <>
