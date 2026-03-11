@@ -32,3 +32,6 @@ See `.env.example` for all required variables.
 - [x] Phase 6 — Security Hardening
 - [x] Phase 7 — Deployment
 - [ ] Phase 8 — QA & Polish
+
+## Live Site
+https://faisal-liaquat.com
