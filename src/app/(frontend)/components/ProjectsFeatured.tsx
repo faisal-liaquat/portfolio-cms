@@ -215,17 +215,7 @@ export default function ProjectsFeatured({ projects }: Props) {
                   >
                     <div className="proj-visual" style={{ background: slide.bg ?? '#eaeaf8' }}>
                       {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={slide.label}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            borderRadius: 8,
-                            display: 'block',
-                          }}
-                        />
+                        <img src={imageUrl} alt={slide.label} className="proj-visual-img" />
                       ) : (
                         <div style={{ textAlign: 'center' }}>
                           <div
@@ -293,28 +283,12 @@ export default function ProjectsFeatured({ projects }: Props) {
             >
               <div className="pc-top">
                 <div className="pc-vis" style={{ background: p.slides?.[0]?.bg ?? '#eaeaf8' }}>
-                  {thumbUrl ? (
-                    <img
-                      src={thumbUrl}
-                      alt={p.title}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: 4,
-                      }}
-                    />
-                  ) : (
-                    <span
-                      style={{
-                        fontSize: 22,
-                        opacity: 0.7,
-                        color: p.slides?.[0]?.color ?? '#2d3561',
-                      }}
-                    >
-                      {p.slides?.[0]?.icon ?? p.visLabel}
-                    </span>
-                  )}
+                  <span
+                    className="pc-vis-label"
+                    style={{ color: p.slides?.[0]?.color ?? '#2d3561' }}
+                  >
+                    {p.visLabel ?? p.slides?.[0]?.icon ?? p.num}
+                  </span>
                 </div>
                 <span className="pc-n">{p.num}</span>
               </div>
