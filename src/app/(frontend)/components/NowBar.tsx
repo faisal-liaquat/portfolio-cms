@@ -29,20 +29,16 @@ export default function NowBar({ label, text, chips }: Props) {
           <span className="pdot"></span>
           active
         </div>
+        <div className="now-sub">// {label}</div>
       </div>
-      <div className="now-b">
-        <div className="now-main">
-          <div className="now-t">{text}</div>
-        </div>
-        <div className="now-cs">
-          {chips.map((c, i) => (
-            <span className="chip" key={i}>
-              {c}
-            </span>
-          ))}
-        </div>
-        <div className="now-beam" aria-hidden="true"></div>
+      <div className="now-cs">
+        {chips.map((c, i) => (
+          <span className="chip" key={i}>
+            {c}
+          </span>
+        ))}
       </div>
+      <div className="now-beam" aria-hidden="true"></div>
     </div>
   )
 }
