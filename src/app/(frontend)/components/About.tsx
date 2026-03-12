@@ -139,8 +139,8 @@ export default function About({
               </>
             )}
             <div className="ab-foot">
-              <span>Faisal — Dev</span>
-              <span>PK · 2025</span>
+              <span>Faisal Liaquat</span>
+              <span>PK · 2026</span>
             </div>
           </div>
         </div>
