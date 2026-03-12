@@ -8,6 +8,7 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 const nextConfig = {
   images: {
     remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'cdn.simpleicons.org' },
     ],
@@ -37,7 +38,8 @@ const nextConfig = {
                 ? `script-src 'self' 'unsafe-inline' 'unsafe-eval'`
                 : `script-src 'self' 'unsafe-inline'`,
               `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-              `img-src 'self' data: blob: https://res.cloudinary.com https://cdn.simpleicons.org`,
+              // https: wildcard covers Cloudinary, simpleicons, and any future image CDN
+              `img-src 'self' data: blob: https: http://localhost:3000`,
               `font-src 'self' data: https://fonts.gstatic.com`,
               isDev
                 ? `connect-src 'self' ws: wss: https://res.cloudinary.com`
