@@ -34,18 +34,20 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               `default-src 'self'`,
-              isDev
-                ? `script-src 'self' 'unsafe-inline' 'unsafe-eval'`
-                : `script-src 'self' 'unsafe-inline'`,
+              // unsafe-eval needed for Payload admin in production (lexical editor)
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live`,
               `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-              // https: wildcard covers Cloudinary, simpleicons, and any future image CDN
+              // https: covers Cloudinary, simpleicons, any image CDN
               `img-src 'self' data: blob: https: http://localhost:3000`,
               `font-src 'self' data: https://fonts.gstatic.com`,
+              // 'self' covers any hostname this app is served from (custom domain + vercel previews)
+              // serverURL covers the explicit production domain for SSR fetches
               isDev
-                ? `connect-src 'self' ws: wss: https://res.cloudinary.com`
-                : `connect-src 'self' ${serverURL} https://res.cloudinary.com`,
+                ? `connect-src 'self' ws: wss: https://res.cloudinary.com https://vercel.live wss://ws-us3.pusher.com`
+                : `connect-src 'self' ${serverURL} https://res.cloudinary.com https://vercel.live wss://ws-us3.pusher.com`,
               `media-src 'self' https://res.cloudinary.com`,
-              `frame-src 'none'`,
+              // vercel.live preview toolbar uses an iframe
+              `frame-src 'none' https://vercel.live`,
               `frame-ancestors 'none'`,
               `object-src 'none'`,
               `base-uri 'self'`,
