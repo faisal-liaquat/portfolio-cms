@@ -2,12 +2,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Rate limit store (in-memory, per-instance — good enough for a personal portfolio)
-// For production multi-instance, use Upstash Redis instead
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
-
-const RATE_LIMIT_WINDOW_MS = 60 * 1000 // 1 minute
-const RATE_LIMIT_MAX = 60 // 60 requests per minute per IP
+const RATE_LIMIT_WINDOW_MS = 60 * 1000
+const RATE_LIMIT_MAX = 60
 
 function getIP(req: NextRequest): string {
   return (
@@ -20,12 +17,10 @@ function getIP(req: NextRequest): string {
 function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now()
   const entry = rateLimitStore.get(ip)
-
   if (!entry || now > entry.resetAt) {
     rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
     return { allowed: true, remaining: RATE_LIMIT_MAX - 1 }
   }
-
   entry.count++
   const remaining = Math.max(0, RATE_LIMIT_MAX - entry.count)
   return { allowed: entry.count <= RATE_LIMIT_MAX, remaining }
@@ -34,8 +29,8 @@ function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // ── Block registration endpoint ────────────────────────────────────────────
-  // Block POST /api/users (Payload's self-registration endpoint)
+  // Block ONLY self-registration — POST /api/users with no path suffix
+  // Everything else (login, logout, me, refresh, media, etc.) passes through untouched
   if (pathname === '/api/users' && req.method === 'POST') {
     return new NextResponse(JSON.stringify({ error: 'Registration is disabled.' }), {
       status: 403,
@@ -43,31 +38,7 @@ export function middleware(req: NextRequest) {
     })
   }
 
-  // ── Block access to the users collection API entirely for non-login ops ───
-  // Allow: POST /api/users/login, POST /api/users/logout, POST /api/users/refresh-token
-  // Block: everything else on /api/users from unauthenticated
-  const allowedUserEndpoints = [
-    '/api/users/login',
-    '/api/users/logout',
-    '/api/users/refresh-token',
-    '/api/users/me',
-    '/api/users/first-register',
-  ]
-  if (
-    pathname.startsWith('/api/users') &&
-    !allowedUserEndpoints.some((ep) => pathname.startsWith(ep))
-  ) {
-    const authHeader = req.headers.get('authorization') ?? ''
-    const hasPayloadToken = req.cookies.has('payload-token')
-    if (!authHeader.startsWith('Bearer ') && !hasPayloadToken) {
-      return new NextResponse(JSON.stringify({ error: 'Unauthorized.' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
-  }
-
-  // ── Rate limiting on all /api/* routes ────────────────────────────────────
+  // Rate limit all API routes — but never block, just add headers
   if (pathname.startsWith('/api/')) {
     const ip = getIP(req)
     const { allowed, remaining } = checkRateLimit(ip)
@@ -94,8 +65,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Match all API routes
-    '/api/:path*',
-  ],
+  matcher: ['/api/:path*'],
 }
