@@ -240,7 +240,7 @@ export default function Hero({ eyebrow, firstName, role, bio, sysBoxLines, stats
           <div className="h-rule" />
           <div className="h-cta">
             <a href="#projects" className="btn-p">
-              View My Work
+              <span>View My Work</span>
             </a>
             <a href="#contact" className="btn-g">
               get in touch →
