@@ -1072,3 +1072,84 @@ body.dark .pf-nav-btn:hover { background: rgba(40,40,80,0.95); }
 body.dark {
   --ink3: #a8a8c8;
 }
+
+/* ── NowBar: remove sub-text gap, centre title ── */
+.now-s {
+  justify-content: center;
+}
+.now-main {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Project buttons: Live → GitHub → ── */
+.pf-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-decoration: none;
+  background: var(--ind);
+  color: #fff;
+  border: 1px solid var(--ind);
+  transition: background .2s, transform .15s, box-shadow .2s;
+  cursor: pointer;
+}
+.pf-btn:hover {
+  background: var(--ind2);
+  border-color: var(--ind2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(45,53,97,.22);
+}
+.pf-btn-ghost {
+  background: transparent;
+  color: var(--ind);
+  border-color: var(--ind3);
+}
+.pf-btn-ghost:hover {
+  background: var(--ind5);
+  border-color: var(--ind);
+  color: var(--ind);
+  box-shadow: 0 4px 12px rgba(45,53,97,.12);
+}
+.pf-btn-arrow {
+  transition: transform .2s;
+  display: inline-block;
+}
+.pf-btn:hover .pf-btn-arrow {
+  transform: translateX(3px);
+}
+body.dark .pf-btn { background: var(--ind); border-color: var(--ind); color: #fff; }
+body.dark .pf-btn:hover { background: var(--ind2); border-color: var(--ind2); }
+body.dark .pf-btn-ghost { background: transparent; color: var(--ind2); border-color: var(--ind3); }
+body.dark .pf-btn-ghost:hover { background: var(--ind5); border-color: var(--ind2); color: var(--ind2); }
+
+/* ── Featured panel image: always fit fully, no crop ── */
+.proj-visual-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* ── Grid card visLabel text ── */
+.pc-vis-label {
+  font-family: var(--head);
+  font-size: 20px;
+  font-weight: 900;
+  opacity: 0.75;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
