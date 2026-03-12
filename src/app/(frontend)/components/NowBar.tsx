@@ -29,12 +29,10 @@ export default function NowBar({ label, text, chips }: Props) {
           <span className="pdot"></span>
           active
         </div>
-        <div className="now-sub">// {label}</div>
       </div>
       <div className="now-b">
         <div className="now-main">
           <div className="now-t">{text}</div>
-          <div className="now-d">// typescript · monorepo · CI/CD · apify platform</div>
         </div>
         <div className="now-cs">
           {chips.map((c, i) => (
