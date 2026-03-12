@@ -152,15 +152,10 @@ export default function ProjectsFeatured({ projects }: Props) {
           </div>
 
           {(proj.liveUrl || proj.githubUrl) && (
-            <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+            <div className="pf-links">
               {proj.liveUrl && (
-                <a
-                  href={proj.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pf-link"
-                >
-                  {'Live \u2192'}
+                <a href={proj.liveUrl} target="_blank" rel="noopener noreferrer" className="pf-btn">
+                  Live <span className="pf-btn-arrow">{'→'}</span>
                 </a>
               )}
               {proj.githubUrl && (
@@ -168,9 +163,9 @@ export default function ProjectsFeatured({ projects }: Props) {
                   href={proj.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="pf-link"
+                  className="pf-btn pf-btn-ghost"
                 >
-                  {'GitHub \u2192'}
+                  GitHub <span className="pf-btn-arrow">{'→'}</span>
                 </a>
               )}
             </div>
