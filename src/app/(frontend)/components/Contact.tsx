@@ -107,6 +107,23 @@ export default function Contact({
               </a>
             ))}
           </div>
+          <div className="ct-logo-wrap" aria-hidden="true">
+            <svg
+              className="ct-logo"
+              viewBox="0 0 220 160"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect x="10" y="10" width="22" height="140" />
+              <rect x="10" y="10" width="80" height="22" />
+              <rect x="10" y="68" width="60" height="20" />
+              <polygon points="85,150 108,10 130,10 107,150" />
+              <rect x="125" y="10" width="22" height="140" />
+              <rect x="125" y="128" width="85" height="22" />
+              <polygon points="158,128 178,55 198,128" />
+              <polygon points="188,128 203,80 213,65 210,128" opacity="0.6" />
+            </svg>
+          </div>
         </div>
       </div>
 

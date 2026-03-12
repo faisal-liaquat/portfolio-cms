@@ -884,3 +884,191 @@ nav {
   box-shadow: 0 6px 18px rgba(0,0,0,.25);
 }
 .soc:hover svg { transform: scale(1.12); }
+
+/* ═══════════════════════════════════════════════════
+   NAV LOGO — FL SVG with 3D hover
+═══════════════════════════════════════════════════ */
+.nb-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 400px;
+  cursor: pointer;
+}
+.nb-logo {
+  width: 36px;
+  height: 26px;
+  color: var(--ink);
+  transition:
+    transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+    color 0.25s ease,
+    filter 0.25s ease;
+  transform-style: preserve-3d;
+}
+.nb-logo-wrap:hover .nb-logo {
+  color: var(--ind);
+  transform: rotateY(18deg) rotateX(-8deg) scale(1.18);
+  filter: drop-shadow(0 4px 10px rgba(45,53,97,0.35));
+}
+body.dark .nb-logo { color: var(--ink); }
+body.dark .nb-logo-wrap:hover .nb-logo {
+  color: var(--ind2);
+  filter: drop-shadow(0 4px 14px rgba(123,132,212,0.45));
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTACT LOGO
+═══════════════════════════════════════════════════ */
+.ct-logo-wrap {
+  margin-top: 28px;
+  opacity: 0.15;
+  transition: opacity 0.3s ease;
+}
+.ct-logo-wrap:hover { opacity: 0.32; }
+.ct-logo {
+  width: 56px;
+  height: 40px;
+  color: #fff;
+  fill: currentColor;
+}
+
+/* ═══════════════════════════════════════════════════
+   HERO h-name — prevent cursor wrapping
+═══════════════════════════════════════════════════ */
+.h-name {
+  font-size: clamp(52px, 7vw, 96px) !important;
+}
+.n2 {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.h-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   BTN-P hover fix — text never disappears
+═══════════════════════════════════════════════════ */
+.btn-p span,
+.btn-p > * {
+  position: relative;
+  z-index: 2 !important;
+}
+.btn-p::before { z-index: 1; }
+.btn-p::after  { z-index: 3; }
+
+/* ═══════════════════════════════════════════════════
+   PROCESS GRID — 4th step same background fix
+═══════════════════════════════════════════════════ */
+.proc-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   DARK MODE toggle visible on mobile
+═══════════════════════════════════════════════════ */
+@media (max-width: 960px) {
+  .nr {
+    display: flex !important;
+    margin-left: auto;
+  }
+  .nr-hash,
+  .nr-avail {
+    display: none;
+  }
+  #dm-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   PROJECT SLIDES — prev/next arrow buttons
+═══════════════════════════════════════════════════ */
+.pf-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid var(--rule2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--ink);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+}
+.pf-nav-btn:hover {
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-50%) scale(1.08);
+}
+.pf-nav-btn.prev { left: 10px; }
+.pf-nav-btn.next { right: 10px; }
+body.dark .pf-nav-btn {
+  background: rgba(30,30,60,0.85);
+  border-color: var(--rule);
+  color: var(--ink);
+}
+body.dark .pf-nav-btn:hover { background: rgba(40,40,80,0.95); }
+
+/* ═══════════════════════════════════════════════════
+   BTN-P — full hover fix (text never hidden)
+═══════════════════════════════════════════════════ */
+.btn-p {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.btn-p::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--ind2), var(--ind));
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 0;
+}
+.btn-p::after {
+  content: '→';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  opacity: 0;
+  font-size: 13px;
+  transition: transform 0.22s, opacity 0.22s;
+  z-index: 2;
+  pointer-events: none;
+}
+.btn-p span {
+  position: relative;
+  z-index: 3;
+  color: #fff;
+  transition: transform 0.22s;
+}
+.btn-p:hover::before { opacity: 1; }
+.btn-p:hover::after  { opacity: 1; transform: translateY(-50%) translateX(0); }
+.btn-p:hover span    { transform: translateX(-8px); }
+
+/* ═══════════════════════════════════════════════════
+   SHARPER BODY / BIO TEXT
+═══════════════════════════════════════════════════ */
+:root {
+  --ink3: #4a4a62;
+}
+body.dark {
+  --ink3: #a8a8c8;
+}

@@ -179,7 +179,31 @@ export default function ProjectsFeatured({ projects }: Props) {
 
         {/* RIGHT - visual panel */}
         <div className="pf-panel">
-          <div className="pf-vis">
+          <div className="pf-vis" style={{ position: 'relative' }}>
+            {(proj.slides?.length ?? 0) > 1 && (
+              <button
+                className="pf-nav-btn prev"
+                onClick={() => {
+                  const count = proj.slides?.length ?? 1
+                  setSlideIdx((i) => (i - 1 + count) % count)
+                }}
+                aria-label="Previous slide"
+              >
+                ‹
+              </button>
+            )}
+            {(proj.slides?.length ?? 0) > 1 && (
+              <button
+                className="pf-nav-btn next"
+                onClick={() => {
+                  const count = proj.slides?.length ?? 1
+                  setSlideIdx((i) => (i + 1) % count)
+                }}
+                aria-label="Next slide"
+              >
+                ›
+              </button>
+            )}
             <div className="pf-img-track">
               {proj.slides?.map((slide, i) => {
                 const imageUrl = resolveImageUrl(slide.image)

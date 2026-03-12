@@ -8,6 +8,29 @@ interface NavProps {
   lastCommit: string
 }
 
+const FLLogo = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 220 160"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-label="Faisal Liaquat"
+  >
+    {/* F */}
+    <rect x="10" y="10" width="22" height="140" />
+    <rect x="10" y="10" width="80" height="22" />
+    <rect x="10" y="68" width="60" height="20" />
+    {/* Diagonal slash */}
+    <polygon points="85,150 108,10 130,10 107,150" />
+    {/* L with mountain peak */}
+    <rect x="125" y="10" width="22" height="140" />
+    <rect x="125" y="128" width="85" height="22" />
+    {/* Mountain peaks */}
+    <polygon points="158,128 178,55 198,128" />
+    <polygon points="188,128 203,80 213,65 210,128" opacity="0.6" />
+  </svg>
+)
+
 export default function Nav({ name, navVersion, status, lastCommit }: NavProps) {
   const [dark, setDark] = useState(false)
 
@@ -28,9 +51,10 @@ export default function Nav({ name, navVersion, status, lastCommit }: NavProps) 
 
   return (
     <nav>
-      <a className="nb" href="#">
-        <span className="nb-name">{name}</span>
-        <span className="nb-ver">{navVersion}</span>
+      <a className="nb" href="#" aria-label={`${name} — home`}>
+        <span className="nb-logo-wrap" title={`${name} ${navVersion}`}>
+          <FLLogo className="nb-logo" />
+        </span>
       </a>
       <div className="nl">
         <a href="#projects">Work</a>
