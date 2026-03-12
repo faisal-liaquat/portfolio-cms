@@ -32,6 +32,16 @@ const hasCloudinary =
   !!process.env.CLOUDINARY_API_KEY &&
   !!process.env.CLOUDINARY_API_SECRET
 
+const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+
+// Build allowed origins — always include both www and non-www variants
+const allowedOrigins = [
+  serverURL,
+  'http://localhost:3000',
+  'https://faisal-liaquat.com',
+  'https://www.faisal-liaquat.com',
+]
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -55,7 +65,9 @@ export default buildConfig({
     },
   }),
   sharp,
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
+  serverURL,
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   plugins: hasCloudinary
     ? [
         cloudStoragePlugin({
