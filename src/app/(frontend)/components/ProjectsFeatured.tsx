@@ -66,12 +66,16 @@ export default function ProjectsFeatured({ projects }: Props) {
 
   const proj = projects[featIdx]
 
+  const pausedRef = useRef(false)
+
   const startSlideTimer = (idx: number) => {
     if (timerRef.current) clearInterval(timerRef.current)
     const slideCount = projects[idx]?.slides?.length ?? 1
     if (slideCount <= 1) return
     timerRef.current = setInterval(() => {
-      setSlideIdx((i) => (i + 1) % slideCount)
+      if (!pausedRef.current) {
+        setSlideIdx((i) => (i + 1) % slideCount)
+      }
     }, 3000)
   }
 
@@ -174,7 +178,16 @@ export default function ProjectsFeatured({ projects }: Props) {
 
         {/* RIGHT - visual panel */}
         <div className="pf-panel">
-          <div className="pf-vis" style={{ position: 'relative' }}>
+          <div
+            className="pf-vis"
+            style={{ position: 'relative' }}
+            onMouseEnter={() => {
+              pausedRef.current = true
+            }}
+            onMouseLeave={() => {
+              pausedRef.current = false
+            }}
+          >
             {(proj.slides?.length ?? 0) > 1 && (
               <button
                 className="pf-nav-btn prev"
