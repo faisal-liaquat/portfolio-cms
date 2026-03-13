@@ -1153,3 +1153,52 @@ body.dark .pf-btn-ghost:hover { background: var(--ind5); border-color: var(--ind
   line-height: 1;
   letter-spacing: -.02em;
 }
+
+/* ── Global overflow guard — nothing escapes viewport ── */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ── Mobile: constrain all sections and text ── */
+@media (max-width: 960px) {
+  .h-left, .h-right {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .h-name {
+    font-size: clamp(44px, 12vw, 80px) !important;
+    word-break: break-word;
+  }
+  .h-name .n1,
+  .h-name .n2 {
+    font-size: clamp(44px, 12vw, 80px) !important;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+  .h-wm { display: none; }
+  .h-bio { max-width: 100%; }
+  .h-sys { max-width: 100%; overflow: hidden; }
+  .h-sys .sl { flex-wrap: wrap; gap: 6px; }
+  .sk { min-width: 0; flex-shrink: 0; }
+  .sv { min-width: 0; word-break: break-word; }
+  .pf-info { padding: 28px 20px !important; }
+  .pf { overflow: hidden; }
+  .sec { padding: 56px 20px; }
+  .now-b { padding: 16px 20px; }
+  .now-t { font-size: 14px; white-space: normal; }
+}
+
+/* ── dm-toggle: black sun in light mode, white moon in dark ── */
+#dm-toggle {
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 8px;
+}
+body.dark #dm-toggle {
+  color: #e8e8f4;
+}
