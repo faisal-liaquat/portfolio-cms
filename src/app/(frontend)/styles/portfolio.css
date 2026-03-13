@@ -171,7 +171,6 @@ nav {
   background:var(--s-hero); overflow:hidden;
   padding-top:44px; display:flex; flex-direction:column;
 }
-#hero canvas { position:absolute; inset:0; pointer-events:none; }
 #hero::before {
   content:''; position:absolute; inset:0;
   background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(45,53,97,.07) 0%,transparent 70%);

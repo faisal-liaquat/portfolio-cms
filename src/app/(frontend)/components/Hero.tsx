@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface SysLine {
   key: string
@@ -26,7 +26,6 @@ const TYPING_SPEED = 80
 const CURSOR_BLINK = 530
 
 export default function Hero({ eyebrow, firstName, role, bio, sysBoxLines, statsBar }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [typed, setTyped] = useState('')
   const [showCursor, setShowCursor] = useState(true)
   const [doneTyping, setDoneTyping] = useState(false)
@@ -70,106 +69,6 @@ export default function Hero({ eyebrow, firstName, role, bio, sysBoxLines, stats
     return () => clearInterval(t)
   }, [])
 
-  /* ── Canvas particle field ── */
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')!
-    let raf: number
-    let W = 0,
-      H = 0
-
-    interface Particle {
-      x: number
-      y: number
-      vx: number
-      vy: number
-      r: number
-      alpha: number
-      pulse: number
-      speed: number
-    }
-
-    const particles: Particle[] = []
-    const N = 55
-
-    const resize = () => {
-      W = canvas.width = canvas.offsetWidth
-      H = canvas.height = canvas.offsetHeight
-    }
-
-    const init = () => {
-      particles.length = 0
-      for (let i = 0; i < N; i++) {
-        particles.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.28,
-          vy: (Math.random() - 0.5) * 0.28,
-          r: Math.random() * 1.6 + 0.4,
-          alpha: Math.random() * 0.35 + 0.08,
-          pulse: Math.random() * Math.PI * 2,
-          speed: Math.random() * 0.018 + 0.008,
-        })
-      }
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H)
-      const t = performance.now() / 1000
-
-      /* connection lines */
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 120) {
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(45,53,97,${(1 - dist / 120) * 0.07})`
-            ctx.lineWidth = 0.5
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
-          }
-        }
-      }
-
-      /* dots */
-      for (const p of particles) {
-        p.pulse += p.speed
-        const a = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse + t))
-        p.x += p.vx
-        p.y += p.vy
-        if (p.x < -10) p.x = W + 10
-        if (p.x > W + 10) p.x = -10
-        if (p.y < -10) p.y = H + 10
-        if (p.y > H + 10) p.y = -10
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(45,53,97,${a})`
-        ctx.fill()
-      }
-
-      raf = requestAnimationFrame(draw)
-    }
-
-    resize()
-    init()
-    draw()
-    window.addEventListener('resize', () => {
-      resize()
-      init()
-    })
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('resize', () => {
-        resize()
-        init()
-      })
-    }
-  }, [])
-
   const sysLines =
     sysBoxLines.length > 0
       ? sysBoxLines
@@ -193,8 +92,6 @@ export default function Hero({ eyebrow, firstName, role, bio, sysBoxLines, stats
 
   return (
     <section id="hero">
-      <canvas ref={canvasRef} id="hero-canvas" />
-
       {/* Floating gradient orbs */}
       <div className="h-orb h-orb1" aria-hidden="true" />
       <div className="h-orb h-orb2" aria-hidden="true" />
